@@ -1,0 +1,100 @@
+<!-- Content Row -->
+<div class="row">
+
+    <div class="col-xl-8 col-lg-7">
+
+        <!-- Area Chart -->
+        <!-- <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="myAreaChart"></canvas>
+                </div>
+                <hr>
+                Styling for the area chart can be found in the
+                <code>/js/demo/chart-area-demo.js</code> file.
+            </div>
+        </div> -->
+
+        <!-- Bar Chart -->
+        <!-- <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-bar">
+                    <canvas id="myBarChart"></canvas>
+                </div>
+                <hr>
+                Styling for the bar chart can be found in the
+                <code>/js/demo/chart-bar-demo.js</code> file.
+            </div>
+        </div>
+
+    </div> -->
+
+    <!-- Donut Chart -->
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Chart Report</h6>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body" id="pie-chart-contributors">
+                <div class="chart-pie pt-4">
+                    <canvas id="myPieChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 col-lg-6 col-xl-5 col-sm-6">
+            <a class="w-100 btn btn-success btn-lg" type="button" href="/csv/download" style="font-weight: 700;">Export all data</a>
+        </div>
+    </div>
+</div>
+
+<script src="/js/report/Chart.min.js"></script>
+
+<script>
+    Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+    Chart.defaults.global.defaultFontColor = '#858796';
+
+    // Pie Chart Example
+    var labels = "<%= labels %>"
+    var contributors = "<%= data %>"
+    var arrayLabels = labels.split(',')
+    var arrayData = contributors.split(',')
+    var ctx = document.getElementById("myPieChart");
+    var myPieChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: arrayLabels,
+        datasets: [{
+            data: arrayData,
+            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#fcb179','#755b95'],
+            hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#dfb595','#766d83'],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+    },
+    options: {
+        maintainAspectRatio: false,
+        tooltips: {
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
+            borderColor: '#dddfeb',
+            borderWidth: 1,
+            xPadding: 15,
+            yPadding: 15,
+            displayColors: false,
+            caretPadding: 10,
+        },
+        cutoutPercentage: 80,
+        title: {
+            display: true,
+            text: "Number of contributors within each Department"
+        }
+    },
+    });
+</script>

@@ -1,0 +1,97 @@
+<div class="row g-5">
+    <div class="col-md-11 col-lg-12">
+        <div class="row g-3" style="margin-top: 1%; margin-bottom: 15px;">
+            <div class="col-sm-2">
+                <a class="w-100 btn btn-info btn-rounded btn-lg" href="/submission-register" id="btn-create-submission">New</a>
+            </div>
+        </div>
+        <div class="row g-3 justify-content-center">
+            <!-- Pagination using helper  -->
+            <% if(typeof(current) !== 'undefined' && typeof(pages) !== 'undefined') { %> 
+                <%- pagination(current, pages, '/submission-management') %> 
+            <% } %> 
+        </div>
+        <div class="row g-3" style="padding: 0 8px; margin-top: 10px;">
+            <div id="tableFixHead">
+                <table class="table-hover">
+                    <thead>
+                        <tr>
+                        <th width="15%">Name</th>
+                        <th width="20%">Closure Date</th>
+                        <th width="20%">Final Closure Date</th>
+                        <th width="10%">Folder</th>
+                        <th width="15%">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(typeof(submissions) !== 'undefined' && submissions.length > 0) { %> 
+                            <% submissions.forEach((submission) => { %>
+                                <tr>
+                                    <td><%= submission.name %></td>
+                                    <td><%= formatDateSubmission(submission.closure_date) %></td>
+                                    <td><%= formatDateSubmission(submission.final_closure_date) %></td>
+                                    <td><a style="color: rgb(243, 195, 64);" target="_blank" rel="noopener noreferrer" href="<% if(typeof(submission.folder) !== 'undefined') { %><%= submission.folder.folder_path %><% } %>"><i class="fa-brands fa-google-drive"></i></a></td>
+                                    <td>
+                                        <ul class="list-inline m-0">
+                                            <li class="list-inline-item">
+                                                <a class="btn btn-success btn-sm rounded-0" type="button" href="/submission-update/<%= submission._id %>" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <button class="btn btn-danger btn-sm rounded-0" type="button" data-bs-toggle="modal" data-id="<%= submission._id %>" data-bs-target="#delete-submission-modal" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            <% }) %>     
+                        <% } else { %>          
+                            <tr>
+                                <td colspan="5" style="text-align: center;">
+                                    <h5 style="font-weight: 700;">No Record</h5>
+                                </td>
+                            </tr>
+                        <% } %> 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirm delete staff -->
+<div id="delete-submission-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Are you confirm to delete this?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-footer">
+            <button id="btn-delete-submission" type="button" class="btn btn-danger">OK</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+</div>
+  
+<!-- Delete hidden form  -->
+<form name="delete-submission-form" method="POST"></form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var submissionId;
+        var deleteForm = document.forms['delete-submission-form'];
+        var btnDeleteSubmission = document.getElementById('btn-delete-submission');
+        // When dialog confirm clicked
+        var exampleModal = document.getElementById('delete-submission-modal')
+        exampleModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            submissionId = button.getAttribute('data-id')
+            
+        });
+        btnDeleteSubmission.onclick = function() {
+            deleteForm.action = '/submission/' + submissionId + '?_method=DELETE';
+            deleteForm.submit();
+        }
+    })
+</script>
+<link rel="stylesheet" href="/css/table.css">

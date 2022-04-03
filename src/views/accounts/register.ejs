@@ -1,0 +1,79 @@
+
+<div class="row g-5">
+    <div class="col-md-11 col-lg-12">
+        <h4 class="mb-3">Register User</h4>
+        <form class="register-account" action="/register" method="post" style="margin-top: 3%;">
+            <div class="row g-3">
+                <div class="col-sm-12 col-lg-12">
+                    <label for="firstName" class="form-label">User Name</label>
+                    <input style="max-width: 49%;" type="text" class="form-control" id="userName" placeholder="" value="" name="username">
+                    <div class="invalid-feedback">
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="firstName" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="userName" placeholder="" value="" name="fullname">
+                    <div class="invalid-feedback">
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="lastName" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="" value="" name="email">
+                    <div class="invalid-feedback">
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="username" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="" value="" name="password">
+                    <div class="invalid-feedback">
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="email" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="" value="" name="confirmPassword">
+                    <div class="invalid-feedback">
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="address" class="form-label">Role</label>
+                    <select class="form-select" aria-label="Default select example" name="role">
+                        <option value="0" selected="" disabled=""></option>
+                        <% if(typeof(roles) !== 'undefined') { %>
+                        <% roles.forEach(value => { %> 
+                            <option value="<%= value._id %>"><%= value.name %></option>
+                        <% }) %> 
+                        <% } %> 
+                    </select>
+                    <div class="invalid-feedback">
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="address2" class="form-label">Department</label>
+                    <select class="form-select" aria-label="Default select example" name="department">
+                        <option value="0" selected="" disabled=""></option>
+                        <% if(typeof(departments) !== 'undefined') { %>
+                        <% departments.forEach(value => { %> 
+                            <option value="<%= value._id %>"><%= value.name %></option>
+                        <% }) %> 
+                        <% } %> 
+                    </select>
+                    <div class="invalid-feedback">
+                    </div>
+                </div>
+                <hr class="my-4">
+                <div class="col-md-3">
+                    <button class="w-100 btn btn-success btn-lg" type="submit" style="font-weight: 700;">Register</button>
+                </div>
+                <div class="col-md-3">
+                    <a class="w-100 btn btn-secondary btn-lg" href="/user-management" type="submit" style="font-weight: 700;">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

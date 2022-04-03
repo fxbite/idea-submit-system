@@ -1,0 +1,56 @@
+<div class="row g-5">
+    <div class="col-md-11 col-lg-12">
+        <div class="row g-3" style="padding: 0 5px">
+            <div id="tableFixHead">
+                <table class="table-hover">
+                    <thead>
+                        <tr>
+                        <th>Detail</th>
+                        <th>Title</th>
+                        <th>Anonymous Mode</th>
+                        <th>Submission</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                        <th>Total Views</th>
+                        <th>Total Reaction</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(typeof(ideas) !== 'undefined' && ideas.length > 0) { %> 
+                            <% ideas.forEach(idea => { %>
+                                <tr>
+                                    <td><a href="/idea-detail/<%= idea._id %> "><i class="fa-solid fa-eye"></i></a></td>
+                                    <td><%= idea.title %></td>
+                                    <td>
+                                        <% if(idea.anonymousMode === true) { %>
+                                            <i style="color: rgb(8, 192, 8);" class="fa-solid fa-circle-check"></i>
+                                        <% } else { %> 
+                                            <i class="fa-solid fa-circle-xmark"></i>
+                                        <% } %> 
+                                    </td>
+                                    <td width="10%">
+                                        <a style="text-decoration: none;" type="button" href="/all-ideas/<%= idea.submission._id %>">
+                                            <%= idea.submission.name %>
+                                        </a>
+                                    </td>
+                                    <td><%= formatDateSubmission(idea.createdAt) %></td>
+                                    <td><%= formatDateSubmission(idea.updatedAt) %></td>
+                                    <td><%= idea.total_view %></td>
+                                    <td><%= idea.total_reaction %></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="9" style="text-align: center;">
+                                    <h5 style="font-weight: 700;">No Record</h5>
+                                </td>
+                            </tr>
+                        <% } %> 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="/css/table.css">

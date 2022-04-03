@@ -1,0 +1,104 @@
+<div class="row g-5">
+    <div class="col-md-11 col-lg-12">
+        <div class="row g-3" style="margin-top: 1%; margin-bottom: 15px;">
+            <div class="col-sm-2">
+                <a class="w-100 btn btn-info btn-rounded btn-lg" href="/user-register" id="btn-create-user">New</a>
+            </div>
+        </div>
+        <div class="row g-3 justify-content-center">
+            <!-- Pagination using helper  -->
+            <% if(typeof(current) !== 'undefined' && typeof(pages) !== 'undefined') { %> 
+                <%- pagination(current, pages, '/user-management') %> 
+            <% } %> 
+        </div>
+        <div class="row g-3" style="padding: 0 8px; margin-top: 10px;">
+            <div id="tableFixHead">
+                <table class="table-hover">
+                    <thead>
+                        <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Full Name</th>
+                        <th>Role</th>
+                        <th>Department</th>
+                        <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(typeof(users) !== 'undefined' && users.length > 0) { %> 
+                            <% users.forEach((user) => { %>
+                                <% if(user.role !== null && user.department !== null) { %> 
+                                    <tr>
+                                        <td><%= user.username %></td>
+                                        <td><%= user.email %></td>
+                                        <td><%= user.fullname %></td>
+                                        <td><%= user.role.name %></td>
+                                        <td><%= user.department.name %></td>
+                                        <td>
+                                            <ul class="list-inline m-0">
+                                                <li class="list-inline-item">
+                                                    <a class="btn btn-success btn-sm rounded-0" href="/user-update/<%= user._id %>" type="button" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <button class="btn btn-danger btn-sm rounded-0" type="button" data-bs-toggle="modal" data-id="<%= user._id %>" data-bs-target="#delete-user-modal" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                <% } %> 
+                            <% }) %> 
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" style="text-align: center;">
+                                    <h5 style="font-weight: 700;">No Record</h5>
+                                </td>
+                            </tr>
+                        <% } %> 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Confirm delete staff -->
+<div id="delete-user-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Are you confirm to delete this?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-footer">
+            <button id="btn-delete-user" type="button" class="btn btn-danger">OK</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+<!-- Delete hidden form  -->
+<form name="delete-user-form" method="POST"></form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var userId;
+        var deleteForm = document.forms['delete-user-form'];
+        var btnDeleteUser = document.getElementById('btn-delete-user');
+        // When dialog confirm clicked
+        var exampleModal = document.getElementById('delete-user-modal')
+        exampleModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            userId = button.getAttribute('data-id')
+            
+        });
+        btnDeleteUser.onclick = function() {
+            deleteForm.action = '/user/' + userId + '?_method=DELETE';
+            deleteForm.submit();
+        }
+    })
+</script>
+
+<link rel="stylesheet" href="/css/table.css">

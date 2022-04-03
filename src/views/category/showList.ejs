@@ -1,0 +1,147 @@
+<div class="row g-5">
+    <div class="col-md-11 col-lg-12">
+        <div class="row g-3" style="margin-top: 1%; margin-bottom: 15px;">
+            <div class="col-sm-3">
+                <button class="w-100 btn btn-info btn-rounded btn-lg" data-bs-toggle="modal" data-bs-target="#createCategory" id="btn-create-category">New</button>
+            </div>
+        </div>
+        <div class="row g-3" style="padding: 0 5px">
+            <div id="tableFixHead">
+                <table class="table-hover">
+                    <thead>
+                        <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Number used</th>
+                        <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(typeof(categories) !== 'undefined' && categories.length > 0) { %> 
+                            <% categories.forEach((category) => { %>
+                                <tr>
+                                    <td><%= category.name %></td>
+                                    <% if(category.use !== '') { %> 
+                                        <td><span style="color: rgb(0, 226, 0); font-size: larger;">•</span> Active</td> 
+                                    <% } else { %>
+                                        <td><span style="color: rgb(253, 63, 63); font-size: larger;">•</span>  Inactive</td> 
+                                    <% } %> 
+                                    <% if(category.use !== '') { %> 
+                                        <td><%= category.use %></td>
+                                    <% } else { %>
+                                        <td>0</td>
+                                    <% } %> 
+                                    <td>
+                                        <ul class="list-inline m-0">
+                                            <li class="list-inline-item">
+                                                <button class="btn btn-success btn-sm rounded-0" type="button" data-bs-toggle="modal" data-bs-target="#updateCategory-<%= category._id %>" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
+                                            </li>
+                                            <% if(category.use === '') { %> 
+                                                <li class="list-inline-item">
+                                                    <button class="btn btn-danger btn-sm rounded-0" type="button" data-id="<%= category._id %>" data-bs-toggle="modal" data-bs-target="#delete-category-modal" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
+                                                </li>
+                                            <% } %> 
+                                        </ul>
+
+                                        <!-- Update Category Modal -->
+                                        <div class="modal fade" id="updateCategory-<%= category._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Update Category</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                <form action="/category/<%= category._id %>?_method=PUT" method="post">
+                                                    <div class="mb-3">
+                                                    <label for="exampleInputEmail1" class="form-label">Category Name</label>
+                                                    <input type="text" class="form-control" id="nameCategory" value="<%= category.name %>" name="name">
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="4" style="text-align: center;">
+                                    <h5 style="font-weight: 700;">No Record</h5>
+                                </td>
+                            </tr>
+                        <% } %> 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Category Modal -->
+<div class="modal fade" id="createCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create Category</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="/category" method="post">
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Category Name</label>
+                  <input type="text" class="form-control" id="nameCategory" name="name">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Delete hidden form  -->
+<form name="delete-category-form" method="POST"></form>
+
+<!-- Confirm Delete Category -->
+<div id="delete-category-modal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Do you confirm to remove this department?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-delete-category" type="button" class="btn btn-danger">OK</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+        var categoryId;
+        var deleteForm = document.forms['delete-category-form'];
+        var btnDeleteCategory = document.getElementById('btn-delete-category');
+        // When dialog confirm clicked
+        var exampleModal = document.getElementById('delete-category-modal')
+        exampleModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            categoryId = button.getAttribute('data-id')
+            
+        });
+        btnDeleteCategory.onclick = function() {
+            deleteForm.action = '/category/' + categoryId + '?_method=DELETE';
+            deleteForm.submit();
+        }
+  });
+</script>
+<link rel="stylesheet" href="/css/table.css">
