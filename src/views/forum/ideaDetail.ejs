@@ -1,0 +1,177 @@
+<!-- Forum Detail -->
+<div class="inner-main-body p-2 p-sm-3 collapse forum-content show" style="padding: 0 !important; padding-top: 7px !important;">
+    <a href="/all-ideas/<%= idea._id %>" class="btn btn-success btn-sm mb-3 has-icon"><i class="fa fa-arrow-left mr-2"></i>Back</a>
+    <div class="card mb-2">
+        <div class="card-body">
+            <% if(typeof(idea) !== 'undefined') { %> 
+                <div class="media forum-item">
+                    <a href="#" class="card-link">
+                        <img src="/img/main/undraw_profile_2.svg" class="rounded-circle" width="50" alt="User" />
+                    </a>
+                    <div class="media-body ml-3">
+                        <a type="button" class="text-secondary">
+                            <% if(idea.anonymousMode !== false) { %> 
+                                <%= idea.user.fullname %> 
+                            <% } else { %>
+                                Anonymous
+                            <% } %>
+                        </a>
+                        <small class="text-muted ml-2">Published <%= formatDateForum(idea.createdAt) %> </small>
+                        <h5 class="mt-1" style="color: orange;"><%= idea.title %></h5>
+                        <div class="mt-3 font-size-sm" style="margin-top: 9px !important;">
+                            <%- idea.content %> 
+                        </div>
+                        <div class="mt-3 font-size-m">
+                            <% if(typeof(file) !== 'undefined') { %> 
+                                <span><a style="text-decoration: none;" href="<%= file.file_path %> "><i class="fa-solid fa-download"></i><small style="margin-left: 5px;"><%= file.file_name %></small></a></span> 
+                            <% } %> 
+                        </div>
+                        <small style="margin-top: 10px;">Author</small>
+                    </div>
+                    <div class="text-muted small text-center">
+                        <span class="d-none d-sm-inline-block"><i class="far fa-eye"></i><%= idea.total_view %></span>
+                        <span><i class="far fa-comment ml-2"></i> 3</span>
+                    </div>
+                </div>
+            <% } %> 
+        </div>
+    </div>
+    <% if(typeof(comments) !== 'undefined') { %> 
+        <% comments.forEach(comment => { %> 
+            <div class="card mb-2">
+                <div class="card-body">
+                    <div class="media forum-item">
+                        <a href="javascript:void(0)" class="card-link">
+                            <img src="/img/main/undraw_profile_2.svg" class="rounded-circle" width="50" alt="User" />
+                        </a>
+                        <div class="media-body ml-3">
+                            <a href="#" class="text-secondary">
+                                <% if(comment.anonymousMode === false) { %> 
+                                    <%= comment.user.fullname %> 
+                                <% } else { %>
+                                    Anonymous
+                                <% } %> 
+                            </a>
+                            <small class="text-muted ml-2">Commented <%= formatDateForum(comment.createdAt) %></small>
+                            <div class="mt-3 font-size-sm">
+                                <%- comment.content %> 
+                            </div>
+                        </div>
+                        <% if(userLoginId === String(comment.user._id)) { %> 
+                            <div class="text-muted small text-center">
+                                <span><a type="button" data-bs-toggle="modal" data-bs-target="#updateComment-<%= comment._id %>"><i class="fa-regular fa-pen-to-square"></i></a></span>
+                                <span style="margin-left: 10px;"><a type="button"  data-bs-toggle="modal" data-id="<%= comment._id %>" data-bs-target="#delete-comment-modal"><i class="fa-solid fa-trash"></i></a></span>
+                            </div>
+                        <% } %> 
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Comment Modal -->
+            <div class="modal fade" id="updateComment-<%= comment._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update Comment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/comment/<%= comment._id %>?_method=PATCH" method="post">
+                            <div class="mb-3">
+                                <label for="lastName" class="form-label">Anonymous Mode</label>
+                                <select class="form-select" aria-label="Default select example" name="anonymousMode">
+                                    <option <% if(comment.anonymousMode === false) { %>selected<% } %> value="false">Disable</option>
+                                    <option <% if(comment.anonymousMode === true) { %>selected<% } %> value="true">Enable</option> 
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control" name="content" id="" cols="30" rows="10">
+                                    <%= comment.content %> 
+                                </textarea>
+                                <input type="hidden" value="<%= userLoginId %>" name="user">
+                                <input type="hidden" value="<%= idea._id %>" name="idea">
+                            </div>
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i><span style="margin-left: 5px;">Send</span></button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+        <% }) %> 
+    <% } %> 
+</div>
+<!-- /Forum Detail -->
+
+<!-- Create Comment Modal -->
+<div class="modal fade" id="makeComment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Make Comment on Idea </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="/comment" method="post">
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Anonymous Mode</label>
+                    <select class="form-select" aria-label="Default select example" name="anonymousMode">
+                        <option value="false" selected disabled="">Disable</option>
+                        <option value="true">Enable</option> 
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <textarea class="form-control" name="content" id="" cols="30" rows="10"></textarea>
+                    <input type="hidden" value="<%= userLoginId %>" name="user">
+                    <input type="hidden" value="<%= idea._id %>" name="idea">
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i><span style="margin-left: 5px;">Send</span></button>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Confirm delete staff -->
+<div id="delete-comment-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Are you confirm to delete this comment?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-footer">
+            <button id="btn-delete-comment" type="button" class="btn btn-danger">OK</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+</div>
+  
+<!-- Delete hidden form  -->
+<form name="delete-comment-form" method="POST"></form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var commentId;
+        var deleteForm = document.forms['delete-comment-form'];
+        var btnDeleteComment = document.getElementById('btn-delete-comment');
+        // When dialog confirm clicked
+        var exampleModal = document.getElementById('delete-comment-modal')
+        exampleModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            commentId = button.getAttribute('data-id')
+            
+        });
+        btnDeleteComment.onclick = function() {
+            deleteForm.action = '/comment/' + commentId + '?_method=DELETE';
+            deleteForm.submit();
+        }
+    })
+</script>

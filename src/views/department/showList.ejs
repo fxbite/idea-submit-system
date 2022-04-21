@@ -1,0 +1,135 @@
+<div class="row g-5">
+    <div class="col-md-11 col-lg-12">
+        <div class="row g-3" style="margin-top: 1%; margin-bottom: 15px;">
+            <div class="col-sm-3">
+                <button class="w-100 btn btn-info btn-rounded btn-lg" data-bs-toggle="modal" data-bs-target="#createDepartment" id="btn-create-department">New</button>
+            </div>
+        </div>
+        <div class="row g-3" style="padding: 0 5px;">
+            <div id="tableFixHead">
+                <table class="table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(typeof(departments) !== 'undefined' && departments.length > 0) { %> 
+                          <% departments.forEach((department) => { %>
+                              <tr>
+                                  <td><%= department.name %></td>
+                                  <td>
+                                      <ul class="list-inline m-0">
+                                          <li class="list-inline-item">
+                                              <button class="btn btn-success btn-sm rounded-0" type="button" data-bs-toggle="modal" data-bs-target="#updateDepartment-<%= department._id %>" data-placement="top" title="Edit"><i class="fa fa-edit"></i></button>
+                                          </li>
+                                          <li class="list-inline-item">
+                                              <button class="btn btn-danger btn-sm rounded-0" type="button" data-id="<%= department._id %>" data-bs-toggle="modal" data-bs-target="#delete-department-modal" data-placement="top" title="Delete"><i class="fa fa-trash"></i></button>
+                                          </li>
+                                      </ul>
+
+                                      <!-- Update Department Modal -->
+                                      <div class="modal fade" id="updateDepartment-<%= department._id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="exampleModalLabel">Update Department</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                              <form action="/department/<%= department._id %>?_method=PUT" method="post">
+                                                <div class="mb-3">
+                                                  <label for="exampleInputEmail1" class="form-label">Department Name</label>
+                                                  <input type="text" class="form-control" id="nameDepartment" value="<%= department.name %>" name="name">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </td>
+                              </tr>
+                          <% }) %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="6" style="text-align: center;">
+                                <h5 style="font-weight: 700;">No Record</h5>
+                            </td>
+                          </tr>
+                        <% } %> 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Department Modal -->
+<div class="modal fade" id="createDepartment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create Department</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="/department" method="post">
+                <div class="mb-3">
+                  <label for="exampleInputEmail1" class="form-label">Department Name</label>
+                  <input type="text" class="form-control" id="nameDepartment" name="name">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Delete hidden form  -->
+<form name="delete-department-form" method="POST"></form>
+
+<!-- Confirm Delete Department -->
+<div id="delete-department-modal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Do you confirm to remove this department?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-delete-department" type="button" class="btn btn-danger">OK</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+        var departmentId;
+        var deleteForm = document.forms['delete-department-form'];
+        var btnDeleteDepartment = document.getElementById('btn-delete-department');
+        // When dialog confirm clicked
+        var exampleModal = document.getElementById('delete-department-modal')
+        exampleModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            departmentId = button.getAttribute('data-id')
+            
+        });
+        btnDeleteDepartment.onclick = function() {
+            deleteForm.action = '/department/' + departmentId + '?_method=DELETE';
+            deleteForm.submit();
+        }
+  });
+</script>
+
+
+<link rel="stylesheet" href="/css/table.css">

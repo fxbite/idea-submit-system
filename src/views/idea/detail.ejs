@@ -1,0 +1,129 @@
+<div class="row g-5">
+    <div class="col-md-11 col-lg-12">
+        <h4 class="mb-3">Idea Detail</h4>
+        <form class="register-account" name="detail-idea-action" action="/idea-detail/<%= idea._id %>" method="post" style="margin-top: 2%; margin-bottom: 3%;">
+            <div class="row g-3">
+            <div class="col-sm-6">
+                <label for="firstName" class="form-label">Title</label>
+                <input type="text" class="form-control" id="userName" placeholder="" <% if(typeof(idea) !== 'undefined') { %>value="<%= idea.title %>"<% } %>  name="title">
+                <div class="invalid-feedback">
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <label for="submisison" class="form-label">Submission</label>
+                <select class="form-select" name="submission">
+                    <option value="" selected="" disabled=""></option>
+                    <% if(typeof(submissions) !== 'undefined') { %>
+                        <% submissions.forEach(value => { %> 
+                            <option <% if(typeof(idea) !== 'undefined' && String(idea.submission) === String(value._id)) { %>selected<% } %> value="<%= value._id %>"><%= value.name %></option>
+                        <% }) %>  
+                    <% } %>  
+                  </select>
+                <div class="invalid-feedback">
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <label for="lastName" class="form-label">Anonymous Mode</label>
+                <select class="form-select" aria-label="Default select example" name="anonymousMode">
+                    <option value="" selected="" disabled=""></option>
+                    <option <% if(typeof(idea) !== 'undefined' && idea.anonymousMode === true) { %>selected<% } %> value="true">Enable</option> 
+                </select>
+                <div class="invalid-feedback">
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <label for="username" class="form-label">Category</label>
+                <select multiple class="chosen-select form-select" name="category">
+                    <option value="" selected="" disabled=""></option>
+                    <% if(typeof(categories) !== 'undefined') { %>
+                        <% categories.forEach(value => { %> 
+                            <% const stringsArray = idea.category.map(x => x.toString()) %> 
+                            <option <% if(typeof(idea) !== 'undefined' && stringsArray.includes(String(value._id) === true)) { %>selected<% } %>  value="<%= value._id %>"><%= value.name %></option>
+                        <% }) %>  
+                    <% } %>  
+                  </select>
+                <div class="invalid-feedback">
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <label for="email" class="form-label">Description</label>
+                <textarea class="form-control" name="description" rows="3"><% if(typeof(idea) !== 'undefined') { %><%= idea.description %><% } %></textarea>
+                <div class="invalid-feedback">
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <label for="address" class="form-label">Content</label>
+                <textarea class="form-control summernote"  name="content" rows="4"><% if(typeof(idea) !== 'undefined') { %><%= idea.content %><% } %></textarea>
+                <div class="invalid-feedback">
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="col-md-3">
+                <button class="w-100 btn btn-warning btn-lg" type="submit" style="font-weight: 700;">Update</button>
+            </div>
+            <div class="col-md-3">
+                <button class="w-100 btn btn-danger btn-lg" type="button" <% if(typeof(idea) !== 'undefined') { %>data-id="<%= idea._id %>"<% } %> data-bs-toggle="modal" data-bs-target="#delete-idea-modal" style="font-weight: 700;">Delete</button>
+            </div>
+            <div class="col-md-3">
+                <a class="w-100 btn btn-secondary btn-lg" type="button" href="/idea-management" style="font-weight: 700;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Confirm Delete Idea -->
+<div id="delete-idea-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Do you confirm to remove this idea?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-delete-idea" type="button" class="btn btn-danger">OK</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+          var ideaId;
+          var deleteForm = document.forms['detail-idea-action'];
+          var btnDeleteIdea = document.getElementById('btn-delete-idea');
+          // When dialog confirm clicked
+          var exampleModal = document.getElementById('delete-idea-modal')
+          exampleModal.addEventListener('show.bs.modal', function (event) {
+              var button = event.relatedTarget
+              ideaId = button.getAttribute('data-id')
+              
+          });
+          btnDeleteIdea.onclick = function() {
+              deleteForm.action = '/idea/' + ideaId + '?_method=DELETE';
+              deleteForm.submit();
+          }
+    });
+   
+</script>
+
+
+<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/harvesthq/chosen@gh-pages/chosen.min.css">
+<script defer src="https://cdn.jsdelivr.net/gh/harvesthq/chosen@gh-pages/chosen.jquery.min.js"></script>
+<script defer src="/js/lib/chosen.js"></script>
+<link rel="stylesheet" href="/css/idea/multiSelect.css">
+
+<!-- include libraries(jQuery, bootstrap) -->
+<script defer src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+<!-- include summernote css/js -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script defer src="/js/editor/summernote.js"></script>

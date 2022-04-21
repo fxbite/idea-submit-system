@@ -1,0 +1,59 @@
+<div class="row g-5">
+    <div class="col-md-11 col-lg-12">
+        <h4 class="mb-3">Modify Submission</h4>
+        <form class="register-account" action="/submission/<% if(typeof(submissions) !== 'undefined') { %><%= submissions._id %><% } %>?_method=PATCH" method="post" style="margin-top: 3%;">
+            <div class="row g-3">
+            <div class="col-lg-12">
+                <label for="firstName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="userName" style="width: 50%;" placeholder="" <% if(typeof(submissions) !== 'undefined') { %>value="<%= submissions.name%>"<% } %>  name="name">
+                <div class="invalid-feedback">
+                </div>
+            </div>
+
+            <div class="col-sm-6" style="margin: 2% 0">
+                <label for="lastName" class="form-label">Closure Date</label>
+                <p style="margin-bottom: 0; font-weight: 700;">
+                    <% if(typeof(submissions) !== 'undefined') { %><%= formatDateSubmission(submissions.closure_date) %><% } %>
+                </p>
+                <input type="datetime-local" class="form-control" id="closure-date" placeholder="" name="closure_date">
+                <div class="invalid-feedback">
+                </div>
+            </div>
+
+            <div class="col-sm-6" style="margin: 2% 0">
+                <label for="username" class="form-label">Final Closure Date</label>
+                <p style="margin-bottom: 0; font-weight: 700;">
+                    <% if(typeof(submissions) !== 'undefined') { %><%= formatDateSubmission(submissions.final_closure_date) %><% } %>
+                </p>
+                <input type="datetime-local" class="form-control" id="final-closure-date" placeholder=""  name="final_closure_date">
+                <div class="invalid-feedback">
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <label for="email" class="form-label">Description</label>
+                <textarea class="form-control summernote" name="description" rows="3">
+                    <% if(typeof(submissions) !== 'undefined') { %>
+                        <%= submissions.description %> 
+                    <% } %> 
+                </textarea>
+                <div class="invalid-feedback">
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="col-md-3">
+                <button class="w-100 btn btn-warning btn-lg" type="submit" style="font-weight: 700;">Update</button>
+            </div>
+            <div class="col-md-3">
+                <a class="w-100 btn btn-secondary btn-lg" href="/submission-management" type="button" style="font-weight: 700;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- include libraries(jQuery, bootstrap) -->
+<script defer src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+<!-- include summernote css/js -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script defer src="/js/editor/summernote.js"></script>
